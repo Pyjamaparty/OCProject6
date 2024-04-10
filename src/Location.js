@@ -9,23 +9,19 @@ import { useNavigate } from 'react-router-dom';
 
 const LocationPage = () => {
     const navigate = useNavigate();
-
     const searchParams = new URLSearchParams(window.location.search);
     const id = searchParams.get('locationId');
 
     const location = logements.find(item => item.id === id);
 
-    console.log(1);
     useEffect(() => {
-        console.log(2);
-        if (location === undefined) {
-            console.log(3);
-            navigate('/error'); 
+        if (!location) {
+            navigate('/error');
         }
-        console.log(4);
     }, [location, navigate]);
-
-    console.log(5);
+    if (!location) {
+        return null; // or a loading spinner
+    }
     const src = location.pictures;
     let currentImageNumber = 1;
     const title = location.title;
@@ -59,6 +55,8 @@ const LocationPage = () => {
 
     /* event listener on the arrows to change the displayed image */
     let currentIndex = 0;
+    
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         const imageCounterText = document.getElementById('image-counter-text');
         const imageContainer = document.querySelector('.location-img');
@@ -159,7 +157,7 @@ const LocationPage = () => {
             <div className='vertical-container'>
                 <div className='location-img' style={{ backgroundImage: `url(${src[0]})` }}>
                     <img src={arrow_back} alt='' id='back-arrow' />
-                    <p id="image-counter-text">{currentImageNumber}/{src.length}</p>
+                    {src.length > 1 && <p id="image-counter-text">{currentImageNumber}/{src.length}</p>}
                     <img src={arrow_forward} alt='' id='forward-arrow' />
                 </div>
                 <div className='location-details'>
