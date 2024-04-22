@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import activeStar from './resources/images/star-active.png';
 import inactiveStar from './resources/images/star-inactive.png';
 import arrow_up from './resources/images/arrow_up.png';
@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 const LocationPage = () => {
     const navigate = useNavigate();
+
     const searchParams = new URLSearchParams(window.location.search);
     const id = searchParams.get('locationId');
 
@@ -22,6 +23,7 @@ const LocationPage = () => {
     if (!location) {
         return null; // or a loading spinner
     }
+
     const src = location.pictures;
     let currentImageNumber = 1;
     const title = location.title;
@@ -55,8 +57,7 @@ const LocationPage = () => {
 
     /* event listener on the arrows to change the displayed image */
     let currentIndex = 0;
-    
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+    // eslint-disable-next-line
     useEffect(() => {
         const imageCounterText = document.getElementById('image-counter-text');
         const imageContainer = document.querySelector('.location-img');
@@ -64,6 +65,7 @@ const LocationPage = () => {
         const forwardArrow = document.getElementById('forward-arrow');
 
         const handleBackArrowClick = () => {
+            // eslint-disable-next-line
             currentIndex = (currentIndex - 1 + src.length) % src.length;
             imageContainer.style.backgroundImage = `url('${src[currentIndex]}')`;
             const currentImageNumber = currentIndex + 1;
@@ -76,7 +78,7 @@ const LocationPage = () => {
             const currentImageNumber = currentIndex + 1;
             imageCounterText.textContent = `${currentImageNumber}/${src.length}`;
         };
-        
+
         /* hide arrows if there is only 1 picture. Test with locationId = 2139a317 */
         if (src.length === 1) {
             backArrow.style.display = 'none';
@@ -95,107 +97,99 @@ const LocationPage = () => {
         };
     }, [src]);
 
-    /* rotate the arrow & open paragraph depending on the class it has */
+    // Add states for description and equipment visibility
+    // eslint-disable-next-line
+    const [isDescriptionVisible, setDescriptionVisible] = useState(false);
+    // eslint-disable-next-line
+    const [isEquipmentVisible, setEquipmentVisible] = useState(false);
+
+    // Modify the arrow click handlers to update the state
     const handleDescArrowClick = () => {
         const arrowDesc = document.getElementById("description-arrow");
-        const arrowEq = document.getElementById("equipments-arrow");
-        const descriptionText = document.getElementById('description-text');
-        const eqText = document.getElementById('equipments-text');
-        const mainContent = document.getElementsByTagName('main')[0];
 
         if (arrowDesc.classList.contains("rotate-down")) {
-            descriptionText.classList.remove("visible");
             arrowDesc.classList.remove("rotate-down");
             arrowDesc.classList.add("rotate-up");
-
-            if (arrowEq.classList.contains("rotate-up")) {
-                mainContent.style.paddingBottom = "0px";
-            }else{
-                mainContent.style.paddingBottom = `${eqText.scrollHeight}px`;
-            }
         } else {
-            descriptionText.classList.add("visible");
             arrowDesc.classList.add("rotate-down");
             arrowDesc.classList.remove("rotate-up");
-
-            const textHeight = Math.max(descriptionText.scrollHeight, eqText.scrollHeight);
-
-            mainContent.style.paddingBottom = `${textHeight}px`;
         }
+
+        setDescriptionVisible(!isDescriptionVisible);
     };
 
     const handleEqArrowClick = () => {
-        const arrowDesc = document.getElementById("description-arrow");
         const arrowEq = document.getElementById("equipments-arrow");
-        const eqText = document.getElementById('equipments-text');
-        const descriptionText = document.getElementById('description-text');
-        const mainContent = document.getElementsByTagName('main')[0];
 
         if (arrowEq.classList.contains("rotate-down")) {
-            eqText.classList.remove("visible");
             arrowEq.classList.remove("rotate-down");
             arrowEq.classList.add("rotate-up");
-
-            if (arrowDesc.classList.contains("rotate-up")) {
-                mainContent.style.paddingBottom = "0px";
-            }else{
-                mainContent.style.paddingBottom = `${descriptionText.scrollHeight}px`;
-            }
         } else {
-            eqText.classList.add("visible");
             arrowEq.classList.add("rotate-down");
             arrowEq.classList.remove("rotate-up");
-
-            const textHeight = Math.max(descriptionText.scrollHeight, eqText.scrollHeight);
-
-            mainContent.style.paddingBottom = `${textHeight}px`;
         }
+        setEquipmentVisible(!isEquipmentVisible);
     };
+
+    // Use the state to conditionally apply a CSS class
+    const descriptionClass = isDescriptionVisible ? 'drop-down-text visible' : 'drop-down-text';
+    const equipmentClass = isEquipmentVisible ? 'drop-down-text visible' : 'drop-down-text';
 
     return (
         <div className='padding-sides'>
-            <div className='vertical-container'>
-                <div className='location-img' style={{ backgroundImage: `url(${src[0]})` }}>
-                    <img src={arrow_back} alt='' id='back-arrow' />
-                    {src.length > 1 && <p id="image-counter-text">{currentImageNumber}/{src.length}</p>}
-                    <img src={arrow_forward} alt='' id='forward-arrow' />
+            <div className='location-img' style={{ backgroundImage: `url(${src[0]})` }}>
+                <img src={arrow_back} alt='' id='back-arrow' />
+                <p id="image-counter-text">{currentImageNumber}/{src.length}</p>
+                <img src={arrow_forward} alt='' id='forward-arrow' />
+            </div>
+            <div className='location-details'>
+                <div className='title-and-location'>
+                    <h2>{title}</h2>
+                    <p>{place}</p>
                 </div>
-                <div className='location-details'>
-                    <div className='title-and-location'>
-                        <h2>{title}</h2>
-                        <p>{place}</p>
-                    </div>
-                    <div className='first-and-last-names'>
-                        <p className='name'>
-                            {names[0]} <br />
-                            {names.slice(1).join(" ")}</p>
-                    </div>
-                    <img src={profilepicture} alt='' className="round-image" />
+                <div className='first-and-last-names desktop'>
+                    <p className='name'>
+                        {names[0]} <br />
+                        {names.slice(1).join(" ")}</p>
                 </div>
-                <div className='tags-and-rating'>
-                    <div className='tags'>
-                        {tagsElements}
-                    </div>
-                    <div className='rating'>
-                        {stars}
-                    </div>
+                <img src={profilepicture} alt='' className="round-image desktop" />
+            </div>
+            <div className='tags-and-rating'>
+                <div className='tags'>
+                    {tagsElements}
+                </div>
+                <div className='rating desktop'>
+                    {stars}
+                </div>
+            </div>
+
+            <div className='location-details'>
+                <div className='rating mobile'>
+                    {stars}
                 </div>
 
-                <div className='description-and-equipments'>
-                    <div className='main-description'>
-                        <div className='description'>
-                            <p>Description</p>
-                            <img src={arrow_up} alt='' id='description-arrow' className="arrow rotate-up" onClick={handleDescArrowClick} />
-                        </div>
-                        <p id="description-text" className='drop-down-text'>{description}</p>
+                <div className='first-and-last-names mobile'>
+                    <p className='name'>
+                        {names[0]} <br />
+                        {names.slice(1).join(" ")}</p>
+                </div>
+                <img src={profilepicture} alt='' className="round-image mobile" />
+            </div>
+
+            <div className='description-and-equipments'>
+                <div className='main-description'>
+                    <div className='description'>
+                        <p>Description</p>
+                        <img src={arrow_up} alt='' id='description-arrow' className="arrow rotate-up" onClick={handleDescArrowClick} />
                     </div>
-                    <div className='main-equipments'>
-                        <div className='equipments'>
-                            <p>Équipements</p>
-                            <img src={arrow_up} alt='' id='equipments-arrow' className="arrow rotate-up" onClick={handleEqArrowClick} />
-                        </div>
-                        <div id="equipments-text" className='drop-down-text'>{equipmentItems}</div>
+                    <p id="description-text" className={descriptionClass}>{description}</p>
+                </div>
+                <div className='main-equipments'>
+                    <div className='equipments'>
+                        <p>Équipements</p>
+                        <img src={arrow_up} alt='' id='equipments-arrow' className="arrow rotate-up" onClick={handleEqArrowClick} />
                     </div>
+                    <div id="equipments-text" className={equipmentClass}>{equipmentItems}</div>
                 </div>
             </div>
         </div>

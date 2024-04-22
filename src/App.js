@@ -30,7 +30,7 @@ function App() {
       <footer>
         <div className='footer-content'>
           <img src={logoWhite} alt="logo" />
-          <p>© 2020 Kasa. All rights reserved</p>
+          <p>© 2020 Kasa. All<span class="responsive-break"><br/></span> rights reserved</p>
         </div>
       </footer>
     </main>

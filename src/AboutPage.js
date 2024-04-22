@@ -82,7 +82,7 @@ const AboutPage = () => {
                     <p>Service</p>
                     <img src={arrow_up} alt='' id='service-arrow' className="arrow rotate-up" onClick={handleServiceArrowClick} />
                 </div>
-                <p id="service-text" className='drop-down-text about-text'>La bienveillance fait partie des valeurs fondatrices de Kasa. Tout comportement discriminatoire ou de perturbation du voisinage entraînera une exclusion de notre plateforme.</p>
+                <p id="service-text" className='drop-down-text about-text'>Nos équipes se tiennent à votre disposition pour vous fournir une expérience parfaite. N'hésitez pas à nous contacter si vous avez la moindre question.</p>
                 <div className='div-about'>
                     <p>Sécurité</p>
                     <img src={arrow_up} alt='' id='security-arrow' className="arrow rotate-up" onClick={handleSecurityArrowClick} />

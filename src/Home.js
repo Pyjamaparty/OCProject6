@@ -34,7 +34,7 @@ class Home extends Component {
         return (
             <div className="padding-sides">
                 <div id="intro">
-                    <p>Chez vous, partout et ailleurs</p>
+                    <p id="intro-text">Chez vous,<span class="responsive-break"><br/></span> partout et ailleurs</p>
                 </div>
 
                 <div id="gallery">
